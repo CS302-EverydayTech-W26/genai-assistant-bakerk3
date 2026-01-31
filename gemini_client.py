@@ -1,7 +1,7 @@
 from google import genai
+from google.genai import types
 import os
 import sys
-from google.genai import types
 import gemini_config as config
     
 class GeminiClient:
@@ -20,7 +20,8 @@ class GeminiClient:
         
         else:
             # TO DO: Modify system instruction based on the purpose of your GenAI Assistant
-            system_instruction = "YOUR SYSTEM INSTRUCTION HERE"
+            # Overarching general instructions, could format output in whatever way you want
+            system_instruction = "Please cite your sources, and include an inspirational limerick at the end of your response."
             
             # Add the prompt to the chat history
             self.chat_history += [types.Content(
@@ -28,8 +29,30 @@ class GeminiClient:
                   parts=[types.Part.from_text(text=user_input)]
                 )]
 
-            # TO DO: Use the client's chat history & system instruction to prompt Gemini
+            # TO DO: Use the client's chat history & system instruction to prompt Gemini. in documentation there is contents,
+            # contents = self.chat_history
+
+            # client = genai.Client()
+            client = self
+
+            response = client.models.generate_content(
+                model="gemini-3-flash-preview",
+                config=types.GenerateContentConfig(
+                    system_instruction),
+                contents=self.chat_history
+            )
+
+            chat = client.chats.create(model="gemini-3-flash-preview")
+
+            response = chat.send_message_stream(user_input)
 
             # TO DO: Add the response text from Gemini to the client's chat history
 
+            self.chat_history += [types.Content(
+                  role='user',
+                  parts=[types.Part.from_text(text=response)]
+                )]
+
             # TO DO: Return the response text from Gemini
+
+            return self.chat_history
