@@ -4,17 +4,18 @@ import sys
 
 def main():
 
-    client = genai.Client()
+    client = GeminiClient()
 
+    print("Type your prompt here:")
     user_input = input()
     
     while (user_input != "exit"):
-       print(client.generate_response(client, user_input))
+       print(client.generate_response(user_input))
+       print("Type your prompt here:")
        user_input = input()
 
     print("Goodbye!")
     sys.exit
-    # pass
 
 if __name__ == "__main__":
   main()

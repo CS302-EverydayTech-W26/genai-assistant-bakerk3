@@ -20,7 +20,6 @@ class GeminiClient:
         
         else:
             # TO DO: Modify system instruction based on the purpose of your GenAI Assistant
-            # Overarching general instructions, could format output in whatever way you want
             system_instruction = "Please cite your sources, and include an inspirational limerick at the end of your response."
             
             # Add the prompt to the chat history
@@ -29,30 +28,24 @@ class GeminiClient:
                   parts=[types.Part.from_text(text=user_input)]
                 )]
 
-            # TO DO: Use the client's chat history & system instruction to prompt Gemini. in documentation there is contents,
-            # contents = self.chat_history
+            # TO DO: Use the client's chat history & system instruction to prompt Gemini.
 
-            # client = genai.Client()
-            client = self
-
-            response = client.models.generate_content(
+            response = self.client.models.generate_content(
                 model="gemini-3-flash-preview",
                 config=types.GenerateContentConfig(
-                    system_instruction),
+                    system_instruction=system_instruction),
                 contents=self.chat_history
             )
 
-            chat = client.chats.create(model="gemini-3-flash-preview")
-
-            response = chat.send_message_stream(user_input)
+            chat = self.client.chats.create(model="gemini-3-flash-preview")
 
             # TO DO: Add the response text from Gemini to the client's chat history
 
             self.chat_history += [types.Content(
-                  role='user',
-                  parts=[types.Part.from_text(text=response)]
+                  role='model',
+                  parts=[types.Part.from_text(text=response.text)]
                 )]
 
             # TO DO: Return the response text from Gemini
 
-            return self.chat_history
+            return response.text
