@@ -11,11 +11,10 @@ def main():
     @app.route('/index')
     def index():
         return render_template('index.html', title='Home')
-        # return 'The Web App with Python Flask!'
     
     @app.route('/prompt/<prompt>')
     def prompt(prompt):
-        return client.generate_response(prompt)
+        return render_template('prompt.html', content=client.generate_response(prompt), prompt=prompt)
     
     app.run(host='0.0.0.0', port=81)
 
